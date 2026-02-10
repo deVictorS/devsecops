@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Meu App Flask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Digite seu nome</h1>
+
+    <form action="/processar" method="POST">
+        <input type="text" name="nome" placeholder="Seu nome">
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
