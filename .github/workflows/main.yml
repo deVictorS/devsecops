@@ -1,0 +1,4 @@
+#maestro: github actions
+#a cada push na branch main, um robo aciona uma VM para executar estes comandos
+#jit orquestra varias ferramentas de segurança (trivy, zap...)
+

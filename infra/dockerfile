@@ -1,0 +1,17 @@
+#imagem do nginx
+#a ideia é o nginx atuar como proxy-reverso (óbvio)
+#para que o usuário nao fale diretamente com o app flask (backend)
+#objetivo do multicontainer é a segurança de rede
+
+FROM nginx:alpine
+
+#remove a config padrão que vem na imagem
+RUN rm /etc/nginx/conf.d/default.conf
+
+#copia o arquivo de conf pra dentro do container
+COPY default.conf /etc/nginx/conf.de
+
+
+EXPOSE 80
+
+#nginx inicia auto, não precisa de CMD

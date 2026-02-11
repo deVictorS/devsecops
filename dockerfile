@@ -1,0 +1,34 @@
+#este é basicamente um container extremamente leve que substitui
+#o servidor nativo do Flask por um motor de nível de produção (gunicorn)
+#seguindo boas práticas de segurança
+#pega o app e injeta no container
+
+#imagem leve reduz superfície de ataque
+FROM python:3.11-slim
+
+#impede python de gerar arquivos .pyc e permite logs em tempo real
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app
+
+#instalando dependências de segurança do so
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \ 
+    && rm -rf /var/lib/apt/lists/*
+
+#criando user no-root (boas práticas)
+RUN useradd -m appuser
+USER appuser
+
+COPY --chown=appuser:appuser requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+COPY --chown=appuser:appuser . . 
+
+#garante que o binário do gunicorn esteja no PATH do usuário
+ENV = PATH="/home/appuser/.local/bin:${PATH}"
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run.app"]
