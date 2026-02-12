@@ -1,0 +1,21 @@
+- name: DevSecOps
+  hosts: all
+  become: yes #roda como root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  
+  tasks:
+    - name: Atualizar pacotes
+      apt:
+        update_cahce: yes
+        upgrade: dist
+
+    - name: Instalar dependências do sistema
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+        state: present
