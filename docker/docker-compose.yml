@@ -16,7 +16,7 @@ services:
             - gunicorn-app-flask
 
     netdata:
-        image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/netdata-flask:latest
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/netdata:latest
         restart: always
         ports:
           - "19999:19999"

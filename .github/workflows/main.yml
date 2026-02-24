@@ -56,16 +56,12 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
-        # Prepara o terreno: copia o requirements para onde o Dockerfile espera (./app)
         cp ./dependencias/requirements.txt ./app/requirements.txt
 
-        # Flask: Agora o contexto ./app contém tanto o código quanto o requirements
         docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn ./app
         docker push $ECR_REGISTRY/gunicorn-app-flask:latest
 
-        # Nginx e Netdata (mantêm o contexto na raiz)
-        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx .
-        docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
-        
+        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
         docker push $ECR_REGISTRY/nginx-app-flask:latest
+        
         docker push $ECR_REGISTRY/netdata:latest
