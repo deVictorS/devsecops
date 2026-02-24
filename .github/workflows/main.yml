@@ -63,5 +63,6 @@ jobs:
 
         docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
         docker push $ECR_REGISTRY/nginx-app-flask:latest
-        
+
+        docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
         docker push $ECR_REGISTRY/netdata:latest
