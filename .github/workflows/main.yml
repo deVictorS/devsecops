@@ -53,11 +53,11 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
-        docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn .
+        docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ../docker/dockerfile.gunicorn .
         docker push $ECR_REGISTRY/gunicorn-app-flask:latest
 
-        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx .
+        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ../docker/dockerfile.nginx .
         docker push $ECR_REGISTRY/nginx-app-flask:latest
 
-        docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
+        docker build -t $ECR_REGISTRY/netdata:latest -f ../docker/dockerfile.netdata .
         docker push $ECR_REGISTRY/netdata:latest
