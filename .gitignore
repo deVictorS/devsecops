@@ -1,4 +1,10 @@
 venv/
-
-keys/
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+projeto-devsecops.pem
+__pycache__/
+*.pyc
+.env
 *.pem

@@ -1,16 +1,27 @@
+variable "status_da_vm" {
+    description = "Estado da instância"
+    type = string
+    default = "running"
+}
+
+resource "aws_ec2_instance_state" "estado_servidor" {
+    instance_id = aws_instance.servidor.id
+    state = var.status_da_vm
+}
+
 provider "aws"  {
     region = "us-east-1"
 }
 
-resource "aws_instance" "sevidor" {
+resource "aws_instance" "servidor" {
   ami = "ami-0b6c6ebed2801a5cb"
   instance_type = "t3.micro"
   key_name = "projeto-devsecops"
 
-  vpc_security_group_ids = [aws_security_group.web_sg.id]
+  vpc_security_group_ids = [aws_security_group.ssh.id]
 
   tags = {
-    name = "servidor-devsecops"
+    Name = "servidor-devsecops"
   }
 }
 
@@ -48,5 +59,5 @@ resource "aws_security_group" "ssh" {
 }
 
 output "ip_publico" {
-  value = aws_instance.sevidor.public_ip
+  value = aws_instance.servidor.public_ip
 }

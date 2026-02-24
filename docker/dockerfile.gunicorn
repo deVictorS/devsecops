@@ -27,7 +27,7 @@ RUN pip install --user --no-cache-dir -r requirements.txt
 COPY --chown=appuser:appuser . . 
 
 #garante que o binário do gunicorn esteja no PATH do usuário
-ENV = PATH="/home/appuser/.local/bin:${PATH}"
+ENV PATH="/home/appuser/.local/bin:${PATH}"
 
 EXPOSE 5000
 

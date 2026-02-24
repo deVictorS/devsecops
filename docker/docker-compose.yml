@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+    gunicorn-app-flask:
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/gunicorn-app-flask:latest
+        restart: always
+        expose: 
+            - "5000" #flask fica em background na rede interna
+
+    nginx-app-flask:
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/nginx-app-flask:latest
+        restart: always
+        ports:
+            - "80:80"
+        depends_on:
+            - gunicorn-app-flask
+
+    netdata:
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/netdata-flask:latest
+        restart: always
+        ports:
+          - "19999:19999"
+        cap_add:
+          - SYS_PTRACE
+        security_opt:
+          - apparmor=unconfined
+        volumes:
+          - /proc:/host/proc:ro
+          - /sys:/host/sys:ro
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+        environment:
+          DOCKER_USR: root
