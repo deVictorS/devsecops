@@ -53,14 +53,11 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
-        # Flask: Arquivo dentro da pasta docker | Código dentro da pasta app
-        docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerf.gunicorn ./app
+        docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn ./docker
         docker push $ECR_REGISTRY/gunicorn-app-flask:latest
 
-        # Nginx: Arquivo dentro da pasta docker | Contexto raiz (se precisar copiar configs da raiz)
-        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerf.nginx .
+        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
         docker push $ECR_REGISTRY/nginx-app-flask:latest
 
-        # Netdata: Arquivo dentro da pasta docker | Contexto raiz
-        docker build -t $ECR_REGISTRY/netdata-repo:latest -f ./docker/dockerf.netdata .
-        docker push $ECR_REGISTRY/netdata-repo:latest
+        docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata ./docker
+        docker push $ECR_REGISTRY/netdata:latest
