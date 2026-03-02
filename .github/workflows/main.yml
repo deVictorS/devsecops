@@ -58,9 +58,9 @@ jobs:
       run: |
         cp ./dependencias/requirements.txt ./app/requirements.txt
 
-        docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn ./app
-        docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
-        docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
+        docker build --no-cache -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn ./app
+        docker build --no-cache -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
+        docker build --no-cache -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
     
     - name: Rodar Trivy (Flask)
       uses: aquasecurity/trivy-action@master
