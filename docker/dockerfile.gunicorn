@@ -5,11 +5,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Atualiza SO e corrige vulnerabilidades
+#atualiza SO e corrige vulnerabilidades
 RUN apk update && \
-    apk upgrade --no-cache
+    apk upgrade --no-cache \
+    apk add --no-cache libpng
 
-# Instala dependências temporárias para build
+#instala dependências temporárias para build
 RUN apk add --no-cache \
     curl \
     gcc \
@@ -17,21 +18,21 @@ RUN apk add --no-cache \
     python3-dev \
     libffi-dev
 
-# Atualiza pip
+#atualiza pip
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Remove dependências de build para reduzir superfície de ataque
+#remove dependências de build para reduzir superfície de ataque
 RUN apk del \
     gcc \
     musl-dev \
     python3-dev \
     libffi-dev
 
-# Cria usuário não-root
+#cria usuário não-root
 RUN adduser -D appuser
 
 COPY . .
