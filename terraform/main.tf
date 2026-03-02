@@ -33,7 +33,7 @@ resource "aws_security_group" "ssh" {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = ["200.131.56.36/32"]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     ingress  {
