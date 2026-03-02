@@ -1,3 +1,5 @@
+#instalar dependências necessárias para rodar o app no servidor
+
 - name: Provisionamento de Infraestrutura (Base)
   hosts: all                
   become: yes
