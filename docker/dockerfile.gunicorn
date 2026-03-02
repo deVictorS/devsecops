@@ -7,7 +7,6 @@ WORKDIR /app
 
 #atualiza SO e corrige vulnerabilidades
 RUN apk update && \
-    apk upgrade --no-cache \
     apk upgrade --no-cache && \
     apk add --no-cache libpng
 
