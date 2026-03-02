@@ -14,7 +14,9 @@ WORKDIR /app
 
 #instalando dependências de segurança do so
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \ 
+    curl \
+    gcc \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 #criando user no-root (boas práticas)
