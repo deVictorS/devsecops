@@ -21,7 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m appuser
 USER appuser
 
-RUN pip install --user --upgrade pip setuptools wheel
+RUN pip install --user --upgrade \ 
+    pip \
+    setuptools>=75.0.0 \
+    wheel>=0.46.2 \
+    jaraco.context>=6.1.0
 
 COPY --chown=appuser:appuser requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
