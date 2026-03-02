@@ -8,7 +8,7 @@
   tasks:
     - name: Copiar Docker Compose atualizado
       copy:
-        src: ./docker/docker-compose.yml
+        src: ../docker/docker-compose.yml
         dest: /home/ubuntu/docker-compose.yml
         owner: ubuntu
         group: ubuntu
