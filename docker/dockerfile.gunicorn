@@ -1,46 +1,38 @@
-#este é basicamente um container extremamente leve que substitui
-#o servidor nativo do Flask por um motor de nível de produção (gunicorn)
-#seguindo boas práticas de segurança
-#pega o app e injeta no container
-
-#imagem leve reduz superfície de ataque
 FROM python:3.11-alpine3.23
 
-#impede python de gerar arquivos .pyc e permite logs em tempo real
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Atualiza SO e corrige vulnerabilidades
 RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache libpng
+    apk upgrade --no-cache
 
-#instalando dependências de segurança do so
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Instala dependências temporárias para build
+RUN apk add --no-cache \
     curl \
     gcc \
+    musl-dev \
     python3-dev \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libffi-dev
 
+# Atualiza pip
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-
-COPY --chown=appuser:appuser requirements.txt .
-
-RUN apt-get purge -y --auto-remove \
+# Remove dependências de build para reduzir superfície de ataque
+RUN apk del \
     gcc \
+    musl-dev \
     python3-dev \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libffi-dev
 
-RUN useradd -m appuser
+# Cria usuário não-root
+RUN adduser -D appuser
 
 COPY . .
 
@@ -50,4 +42,4 @@ USER appuser
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run.app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run:app"]
