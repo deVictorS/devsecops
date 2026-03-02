@@ -52,17 +52,67 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build e Push das imagens
+    - name: Build das imagens
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
         cp ./dependencias/requirements.txt ./app/requirements.txt
 
         docker build -t $ECR_REGISTRY/gunicorn-app-flask:latest -f ./docker/dockerfile.gunicorn ./app
-        docker push $ECR_REGISTRY/gunicorn-app-flask:latest
-
         docker build -t $ECR_REGISTRY/nginx-app-flask:latest -f ./docker/dockerfile.nginx ./docker
-        docker push $ECR_REGISTRY/nginx-app-flask:latest
-
         docker build -t $ECR_REGISTRY/netdata:latest -f ./docker/dockerfile.netdata .
+    
+    - name: Rodar Trivy (Flask)
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ steps.login-ecr.outputs.registry }}/gunicorn-app-flask:latest'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
+
+    - name: Rodar Trivy (Nginx)
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ steps.login-ecr.outputs.registry }}/nginx-app-flask:latest'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        severity: 'CRITICAL,HIGH'
+
+    - name: Push das imagens para ECR 
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        docker push $ECR_REGISTRY/gunicorn-app-flask:latest
+        docker push $ECR_REGISTRY/nginx-app-flask:latest
         docker push $ECR_REGISTRY/netdata:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Código
+        uses: actions/checkout@v3
+
+      - name: Configurar Chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Instalar Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Rodar Ansible de Deploy
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          echo "[servidor]" > inventory.ini
+          echo "$SERVER_HOST ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa" >> inventory.ini
+          # Chamando especificamente o arquivo de deploy
+          ansible-playbook -i inventory.ini ansible/deploy.yml
