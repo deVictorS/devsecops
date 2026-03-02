@@ -1,3 +1,8 @@
-bandit
-safety
-safety-schemas
+Flask==3.1.2
+gunicorn==21.2.0
+requests==2.32.5
+httpx==0.28.1
+pydantic==2.12.5
+marshmallow==4.2.2
+cryptography==46.0.5
+Authlib==1.6.7

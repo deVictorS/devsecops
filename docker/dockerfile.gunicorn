@@ -20,27 +20,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd -m appuser
-USER appuser
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY --chown=appuser:appuser requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY --chown=appuser:appuser . .
 
-# Usando USER root para ter permissão de remover pacotes
-USER root
 RUN apt-get purge -y --auto-remove \
     gcc \
     python3-dev \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-USER appuser    
+RUN useradd -m appuser
 
-#garante que o binário do gunicorn esteja no PATH do usuário
-ENV PATH="/home/appuser/.local/bin:${PATH}"
+COPY . .
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
 
 EXPOSE 5000
 
