@@ -16,6 +16,10 @@
         group: ubuntu
         mode: '0644'
 
+    - name: Limpar Docker para liberar espaço
+      shell: docker system prune -af --volumes
+      changed_when: false
+
     - name: Criar arquivo .env para o Compose
       copy:
         dest: /home/ubuntu/.env
