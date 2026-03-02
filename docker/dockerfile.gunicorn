@@ -4,13 +4,17 @@
 #pega o app e injeta no container
 
 #imagem leve reduz superfície de ataque
-FROM python:3.11-slim
+FROM python:3.11-alpine3.23
 
 #impede python de gerar arquivos .pyc e permite logs em tempo real
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
+
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache libpng
 
 #instalando dependências de segurança do so
 RUN apt-get update && apt-get install -y --no-install-recommends \
