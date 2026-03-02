@@ -31,7 +31,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN apt-get purge -y --auto-remove \
     gcc \
     python3-dev \
-    libffi-dev
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 
 COPY --chown=appuser:appuser . . 
