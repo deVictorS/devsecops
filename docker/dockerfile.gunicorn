@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m appuser
 USER appuser
 
-RUN pip install --user --upgrade pip setuptools whell
+RUN pip install --user --upgrade pip setuptools wheel
 
 COPY --chown=appuser:appuser requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
