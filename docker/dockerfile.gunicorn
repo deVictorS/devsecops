@@ -17,13 +17,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gcc \
     python3-dev \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 #criando user no-root (boas práticas)
 RUN useradd -m appuser
 USER appuser
 
-RUN pip install --user --no-cache-dir --upgrade \
+RUN pip install --user --no-cache-dir --default-timeout=100 --upgrade \
     pip \
     setuptools>=75.0.0 \
     wheel>=0.46.2 \
