@@ -5,6 +5,10 @@
 
 FROM nginx:alpine
 
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache libpng
+
 #remove a config padrão que vem na imagem
 RUN rm /etc/nginx/conf.d/default.conf
 
