@@ -1,3 +1,5 @@
+#copia docker compose atualizado e pull das imagens atualizadas no ecr
+
 - name: Deploy Contínuo da Aplicação
   hosts: servidor
   become: yes
