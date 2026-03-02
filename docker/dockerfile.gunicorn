@@ -7,8 +7,8 @@
 FROM python:3.11-slim
 
 #impede python de gerar arquivos .pyc e permite logs em tempo real
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -20,18 +20,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 #criando user no-root (boas práticas)
 RUN useradd -m appuser
 USER appuser
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install --user --no-cache-dir --default-timeout=100 --upgrade \
-    pip \
-    setuptools>=75.0.0 \
-    wheel>=0.46.2 \
-    jaraco.context>=6.1.0
+RUN apt-get purge -y --auto-remove \
+    gcc \
+    python3-dev \
+    libffi-dev
 
-COPY --chown=appuser:appuser requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
 
 COPY --chown=appuser:appuser . . 
 
