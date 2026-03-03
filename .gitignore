@@ -1,3 +1,4 @@
+
 venv/
 .terraform/
 *.tfstate
@@ -9,3 +10,16 @@ __pycache__/
 .env
 *.pem
 .vscode
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+.aws/
+.flaskenv
+dist/
+build/
+*.log
+*.retry
+.docker/
+.DS_Store
+node_modules/
